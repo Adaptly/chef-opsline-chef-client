@@ -79,7 +79,7 @@ end
 
 # cron (depends on attribute)
 minute_interval = (60 / node['opsline-chef-client']['runs_per_hour'])
-node_splay = Digest::MD5.new.hexdigest(node.hostname).hex() % minute_interval
+node_splay = Digest::MD5.new.hexdigest(node['hostname']).hex() % minute_interval
 minutes = ''
 (0..node['opsline-chef-client']['runs_per_hour']-1).each do |i|
   minutes += ((i * minute_interval) + node_splay).to_s + ','
@@ -116,6 +116,10 @@ if node['opsline-chef-client']['cron']
   elsif File.exists?('/etc/init.d/chef-client')
     service 'chef-client' do
       supports :status => true, :restart => true
+      action [:disable, :stop]
+    end
+  elsif File.exists?('/lib/systemd/system/chef-client.service')
+    service 'chef-client' do
       action [:disable, :stop]
     end
   end

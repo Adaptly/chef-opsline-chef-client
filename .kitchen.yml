@@ -1,12 +1,44 @@
 ---
-driver: 
-  name: vagrant
+driver:
+  shared_credentials_profile: prod-west
+  aws_ssh_key_id: key2
+  name: ec2
+  associate_public_ip: true
+  availability_zone: us-west-2b
+  block_device_mappings:
+    - device_name: /dev/sda1
+      ebs:
+        volume_size: 100
+        volume_type: gp2
+        delete_on_termination: true
+  instance_type: m3.medium
+  security_group_ids: [sg-06e2ab63]
+  region: us-west-2
+  subnet_id: subnet-1f2a356b
+  iam_profile_name: chef-testing
+  tags:
+    Accessibility: Public
 
 provisioner:
   name: chef_zero
+  #data_bags_path: test/integration/data_bags
+  #environments_path: test/integration/environments
+  #encrypted_data_bag_secret_key_path: test/integration/data_bags/encrypted_data_bag_secret
+  client_rb:
+    #environment: production
+    log_level: :debug
+
+transport:
+  name: sftp
+  compression: true
+  ssh_key: ~/.chef/key2.pem
 
 platforms:
-  - name: ubuntu-14.04
+  - name: adaptly-ami-hvm-3.0
+    driver:
+      image_id: ami-0fd1934f5fc8c89c2
+    transport:
+      username: ubuntu
 
 suites:
   - name: default
@@ -38,3 +70,5 @@ suites:
     attributes:
       datadog:
         api_key: fake_api_key
+        agent_major_version: 5
+        agent_version: '5.32.3'

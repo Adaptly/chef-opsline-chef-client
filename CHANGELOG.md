@@ -1,5 +1,8 @@
 # CHANGELOG for opsline-chef-client
 
+## 0.22.0
+* Update the cookbook for Chef 15 and Ubuntu 18.04 compatibility
+
 ## 0.21.0
 * adding `disabled_file` attribute
 * adding `chef.enabled` datadog metric
